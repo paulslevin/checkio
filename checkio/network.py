@@ -1,3 +1,17 @@
+"""
+Executive function: capture
+Input: matrix containing details of a computer network
+Output: the time until the whole network is infected
+Example: [[0, 1, 0, 1, 0, 1],
+          [1, 8, 1, 0, 0, 0],
+          [0, 1, 2, 0, 0, 1],
+          [1, 0, 0, 1, 1, 0],
+          [0, 0, 0, 1, 3, 1],
+          [1, 0, 1, 0, 1, 2]] --> 8
+Link: http://www.checkio.org/mission/network-attack/
+"""
+
+
 class Network(object):
 
     def __init__(self, matrix):

@@ -1,3 +1,10 @@
+"""
+Executive function: texas_referee
+Input: a community hand in Texas Hold 'Em
+Output: the best 5-card hand
+Example: "Kh,Qh,Ah,9s,2c,Th,Jh" --> "Ah,Kh,Qh,Jh,Th"
+Link: http://www.checkio.org/mission/texas-referee/
+"""
 from itertools import product, combinations
 from string import digits
 

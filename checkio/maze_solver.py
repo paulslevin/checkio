@@ -1,4 +1,24 @@
-compass = {(1, 0): "S", (-1, 0): "N", (0, 1): "E", (0, -1): "W"}
+"""
+Executive function: checkio
+Input: a labyrinth map as a list of lists with 1 and 0 (12x12) where 1
+represents an obstacle; the map is always bordered by 1's and we start at
+square (1, 1) and want to reach square (10, 10)
+Output: a string of compass directions to escape the labyrinth
+Example: [[1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,0,0,0,0,0,0,0,0,0,1],
+          [1,0,1,1,1,1,1,1,0,1,1,1],
+          [1,0,1,0,0,0,0,0,0,0,0,1],
+          [1,0,1,0,1,1,1,1,1,1,0,1],
+          [1,0,1,0,1,0,0,0,0,0,0,1],
+          [1,0,0,0,1,1,0,1,1,1,0,1],
+          [1,0,1,0,0,0,0,1,0,1,1,1],
+          [1,0,1,1,0,1,0,0,0,0,0,1],
+          [1,0,1,0,0,1,1,1,1,1,0,1],
+          [1,0,0,0,1,1,0,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1],] --> "EEEEEEESSEESSWWWWSSSEEEESS"
+Link: http://www.checkio.org/mission/open-labyrinth/
+"""
+COMPASS = {(1, 0): "S", (-1, 0): "N", (0, 1): "E", (0, -1): "W"}
 
 
 def checkio(maze_map):
@@ -36,6 +56,6 @@ def checkio(maze_map):
     for i in range(1, len(route)):
         compass_direction = (route[i][0] - route[i - 1][0],
                              route[i][1] - route[i - 1][1])
-        direction_string += compass[compass_direction]
+        direction_string += COMPASS[compass_direction]
 
     return direction_string

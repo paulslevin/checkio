@@ -1,3 +1,10 @@
+"""
+Executive function: color_map
+Input: tuple of tuples of numbers representing countries.
+Output: a 4-coloring of the map
+Example: ((0, 0, 0), (0, 1, 1), (0, 0, 2)) --> [1, 2, 3]
+Link: http://www.checkio.org/mission/color-map/
+"""
 from itertools import izip, product
 
 

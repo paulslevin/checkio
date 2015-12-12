@@ -1,3 +1,13 @@
+"""
+Executive function: checkio
+Input: dictionary of an alloy; keys are metals and values are Fractions of the
+alloy given by the sum of these metals
+Output: the proportion of gold in the given alloy
+Example: {'gold-tin': Fraction(1, 2),
+          'gold-iron': Fraction(1, 3),
+          'gold-copper': Fraction(1, 4)} ---> Fraction(1, 24)
+Link: http://www.checkio.org/mission/color-map/
+"""
 from fractions import Fraction
 
 start_of_words = ["g", "t", "i", "c"]

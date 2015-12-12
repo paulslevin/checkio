@@ -1,3 +1,11 @@
+"""
+Executive function: simplify
+Input: expression containing +,-,*,**,(,),x,0-9 that can be read as
+a polynomial
+Output: the expression in standard form
+Example: "(x-1)*(x+1)" --> "x**2-1"
+Link: http://www.checkio.org/mission/simplification/
+"""
 import re
 import operator
 

@@ -1,3 +1,15 @@
+"""
+Executive function: mind_switcher
+Input: tuple of 2-element sets containing bodies who have undergone a mind swap
+Output: the sequence of mind swaps required to get everyone back to their
+original bodies
+Example: ({"scout", "super"},) --> ({"super", "nikola"}, {"sophia", "scout"},
+                                    {"nikola", "scout"}, {"sophia", "super"},
+                                    {"nikola", "sophia"})
+Link: http://www.checkio.org/mission/mind-switcher/
+"""
+
+
 class Futurama(object):
 
     def __init__(self, bodies):

@@ -1,3 +1,10 @@
+"""
+Executive function: checkio
+Input: time string
+Output: the time interpreted as Morse code
+Example: "10:37:49" --> ".- .... : .-- .--- : -.. -..-"
+Link: http://www.checkio.org/mission/morse-clock/
+"""
 import re
 BINARY_LENGTHS = {0: 2, 1: 4, 2: 3, 3: 4, 4: 3, 5: 4}
 
