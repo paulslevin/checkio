@@ -10,22 +10,26 @@ import re
 import operator
 
 bracket_re = re.compile("\([^\(]+?\)")
-# IMPOSSIBLES = {"++", "--", "**("}
-# IMPOSSIBLES |= set("{}x".format(i) for i in range(10))
-# IMPOSSIBLES |= set("x{}".format(i) for i in range(10))
+IMPOSSIBLES = {"++", "--", "**(", "xx",}
+IMPOSSIBLES |= set("{}x".format(i) for i in range(10))
+IMPOSSIBLES |= set("x{}".format(i) for i in range(10))
+ALLOWED = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
+           "x", "+", "*", " ", "-", "(", ")",}
 
 
-# def correct_input(string):
-#     d = {"(": 1, ")": -1}
-#     count = 0
-#     for character in string:
-#         count += d.get(character, 0)
-#         if count < 0:
-#             return False
-#     for substring in IMPOSSIBLES:
-#         if substring in string:
-#             return False
-#     return True if count == 0 else False
+def correct_input(string):
+    d = {"(": 1, ")": -1}
+    count = 0
+    for character in string:
+        if character not in ALLOWED:
+            return False
+        count += d.get(character, 0)
+        if count < 0:
+            return False
+    for substring in IMPOSSIBLES:
+        if substring in string:
+            return False
+    return True if count == 0 else False
 
 
 def remove_minuses(expr):
@@ -178,8 +182,8 @@ def erase_indices(poly):
 
 def simplify(poly):
     poly = poly.replace(" ", "")
-    # if not correct_input(poly):
-    #     return "Please put the input in the correct format!"
+    if not correct_input(poly):
+        raise ValueError("Please put the input in the correct format!")
     terms, coeff_dict = [], get_coeff_dictionary(poly)
     degree = max(coeff_dict.keys())
     for i in range(0, degree + 1)[::-1]:
@@ -197,6 +201,3 @@ def simplify(poly):
         return final_poly
     return "0"
 
-
-exp = "x**2+x**2+ 5 +7*7*x**2"
-print simplify(exp)
