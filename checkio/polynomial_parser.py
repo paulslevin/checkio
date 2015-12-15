@@ -10,22 +10,22 @@ import re
 import operator
 
 bracket_re = re.compile("\([^\(]+?\)")
-IMPOSSIBLES = {"++", "--", "**("}
-IMPOSSIBLES |= set("{}x".format(i) for i in range(10))
-IMPOSSIBLES |= set("x{}".format(i) for i in range(10))
+# IMPOSSIBLES = {"++", "--", "**("}
+# IMPOSSIBLES |= set("{}x".format(i) for i in range(10))
+# IMPOSSIBLES |= set("x{}".format(i) for i in range(10))
 
 
-def correct_input(string):
-    d = {"(": 1, ")": -1}
-    count = 0
-    for character in string:
-        count += d.get(character, 0)
-        if count < 0:
-            return False
-    for substring in IMPOSSIBLES:
-        if substring in string:
-            return False
-    return True if count == 0 else False
+# def correct_input(string):
+#     d = {"(": 1, ")": -1}
+#     count = 0
+#     for character in string:
+#         count += d.get(character, 0)
+#         if count < 0:
+#             return False
+#     for substring in IMPOSSIBLES:
+#         if substring in string:
+#             return False
+#     return True if count == 0 else False
 
 
 def remove_minuses(expr):
@@ -112,6 +112,8 @@ def erase_brackets(expr):
                                 ) + ")", 1)
             # also get rid of any duplicate + or - signs
             expr = expr.replace("--", "+").replace("++", "+")
+
+
     # finally replace -x by -1*x to ease parsing
     expr = expr.replace("-x", "-1*x")
     return expr
@@ -124,6 +126,8 @@ def sort_term(term):
     """
     subterms, ints = term.split("*"), []
     for t in sorted(subterms):
+        power_index = t.find("^")
+        t = t.replace("^", "**")
         if t[-1].isdigit():
             ints.append(int(t))
         else:
@@ -142,6 +146,7 @@ def get_coeff_dictionary(poly):
     :param poly:
     """
     poly = erase_brackets(poly)
+    poly = erase_indices(poly) # we need the polynomial not to contain **
     terms = poly.split("+")
     sorted_terms = [sort_term(term) for term in terms]
     coeff_dict = {}
@@ -153,10 +158,28 @@ def get_coeff_dictionary(poly):
     return coeff_dict
 
 
+def erase_indices(poly):
+    """
+    Erase indices as long as the polynomial has no brackets
+    :param poly:
+    :return:
+    """
+    assert "(" not in poly
+    if "**" not in poly:
+        return poly
+    terms = poly.split("+")
+    for i, term in enumerate(terms):
+        if "**" in term:
+            j = term.index("**")
+            term = "(" + term[:j] + ")*" + term[j + 1:]
+            terms[i] = term
+    return erase_brackets("+".join(terms))
+
+
 def simplify(poly):
     poly = poly.replace(" ", "")
-    if not correct_input(poly):
-        return "Please put the input in the correct format!"
+    # if not correct_input(poly):
+    #     return "Please put the input in the correct format!"
     terms, coeff_dict = [], get_coeff_dictionary(poly)
     degree = max(coeff_dict.keys())
     for i in range(0, degree + 1)[::-1]:
@@ -173,3 +196,7 @@ def simplify(poly):
     if final_poly:
         return final_poly
     return "0"
+
+
+exp = "x**2+x**2+ 5 +7*7*x**2"
+print simplify(exp)
