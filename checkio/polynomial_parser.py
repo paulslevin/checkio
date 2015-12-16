@@ -13,8 +13,8 @@ bracket_re = re.compile("\([^\(]+?\)")
 IMPOSSIBLES = {"++", "--", "**(", "xx",}
 IMPOSSIBLES |= set("{}x".format(i) for i in range(10))
 IMPOSSIBLES |= set("x{}".format(i) for i in range(10))
-ALLOWED = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
-           "x", "+", "*", " ", "-", "(", ")",}
+ALLOWED = {"1", "2", "3", "4", "5", "6", "7", "8", "9",
+           "0", "x", "+", "*", " ", "-", "(", ")",}
 
 
 def correct_input(string):
@@ -98,8 +98,9 @@ def erase_brackets(expr):
         elif expr[last: last + 2] == "**":
             i, v = get_until(expr[last + 2:], "+", "(")
             j = i + len(expr[: last]) + 2
-            expr = expr.replace(expr[first: j],
-                                "*".join(expr[first: j - 3]
+            offset = len(str(v)) + 2
+            expr = expr.replace(expr[first:j],
+                                "*".join(expr[first: j - offset]
                                          for _ in range(int(v))))
         # or bring products to the right-hand-side of our pair
         elif expr[first - 1: first] == "*":
@@ -116,8 +117,6 @@ def erase_brackets(expr):
                                 ) + ")", 1)
             # also get rid of any duplicate + or - signs
             expr = expr.replace("--", "+").replace("++", "+")
-
-
     # finally replace -x by -1*x to ease parsing
     expr = expr.replace("-x", "-1*x")
     return expr
@@ -171,13 +170,15 @@ def erase_indices(poly):
     assert "(" not in poly
     if "**" not in poly:
         return poly
-    terms = poly.split("+")
-    for i, term in enumerate(terms):
-        if "**" in term:
-            j = term.index("**")
-            term = "(" + term[:j] + ")*" + term[j + 1:]
-            terms[i] = term
-    return erase_brackets("+".join(terms))
+    elif "**" in poly and poly.count("*") == 2:
+        j = poly.index("**")
+        poly = "(" + poly[:j] + ")*" + poly[j + 1:]
+        return erase_brackets(poly)
+    elif "**" in poly:
+        poly = poly.replace("**", "^")
+        terms = poly.split("*")
+        terms = [erase_indices(term.replace("^", "**")) for term in terms]
+        return "*".join(terms)
 
 
 def simplify(poly):
@@ -190,14 +191,19 @@ def simplify(poly):
         coeff = coeff_dict.get(i, 0)
         if i == 0 and coeff:
             terms.append(str(coeff))
+        elif coeff == 1 and i == 1:
+            terms.append("x")
         elif coeff == 1:
             terms.append("x**{}".format(str(i)))
+        elif coeff == -1 and i == 1:
+            terms.append("-x".format(str(i)))
         elif coeff == -1:
             terms.append("-x**{}".format(str(i)))
+        elif coeff != 0 and i == 1:
+            terms.append("{}*x".format(coeff, str(i)))
         elif coeff != 0:
             terms.append("{}*x**{}".format(coeff, str(i)))
-    final_poly = "+".join(terms).replace("+-", "-").replace("**1", "")
+    final_poly = "+".join(terms).replace("+-", "-")
     if final_poly:
         return final_poly
     return "0"
-
