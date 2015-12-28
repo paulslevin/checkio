@@ -172,7 +172,10 @@ def erase_indices(poly):
         return poly
     elif "**" in poly and poly.count("*") == 2 and "+" in poly:
         terms = poly.split("+")
-        terms[-1] = erase_indices(terms[-1])
+        for i, v in enumerate(terms):
+            if "**" in v:
+                terms[i] = erase_indices(terms[i])
+                continue
         return "+".join(terms)
     elif "**" in poly and poly.count("*") == 2:
         print poly
