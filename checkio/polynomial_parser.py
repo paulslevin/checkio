@@ -1,6 +1,6 @@
 """
 Executive function: simplify
-Input: expression containing +,-,*,**,(,),x,0-9 that can be read as
+Input: expression containing +, - , *, **, (, ), x, 0-9 that can be read as
 a polynomial
 Output: the expression in standard form
 Example: "(x-1)*(x+1)" --> "x**2-1"
@@ -10,11 +10,11 @@ import re
 import operator
 
 bracket_re = re.compile("\([^\(]+?\)")
-IMPOSSIBLES = {"++", "--", "**(", "xx",}
+IMPOSSIBLES = {"++", "--", "**(", "xx", }
 IMPOSSIBLES |= set("{}x".format(i) for i in range(10))
 IMPOSSIBLES |= set("x{}".format(i) for i in range(10))
 ALLOWED = {"1", "2", "3", "4", "5", "6", "7", "8", "9",
-           "0", "x", "+", "*", " ", "-", "(", ")",}
+           "0", "x", "+", "*", " ", "-", "(", ")", }
 
 
 def correct_input(string):
@@ -94,9 +94,10 @@ def erase_brackets(expr):
             j = i + len(expr[: last]) + 1
             new_exp = dist(terms, v)
             expr = expr.replace(expr[first: j], new_exp, 1)
+            # return expr
         # or get rid of indices
         elif expr[last: last + 2] == "**":
-            i, v = get_until(expr[last + 2:], "+", "(")
+            i, v = get_until(expr[last + 2:], "+", "(", "*")
             j = i + len(expr[: last]) + 2
             offset = len(str(v)) + 2
             expr = expr.replace(expr[first:j],
@@ -129,7 +130,6 @@ def sort_term(term):
     """
     subterms, ints = term.split("*"), []
     for t in sorted(subterms):
-        power_index = t.find("^")
         t = t.replace("^", "**")
         if t[-1].isdigit():
             ints.append(int(t))
@@ -149,7 +149,7 @@ def get_coeff_dictionary(poly):
     :param poly:
     """
     poly = erase_brackets(poly)
-    poly = erase_indices(poly) # we need the polynomial not to contain **
+    poly = erase_indices(poly)  # we need the polynomial not to contain **
     terms = poly.split("+")
     sorted_terms = [sort_term(term) for term in terms]
     coeff_dict = {}
@@ -170,18 +170,15 @@ def erase_indices(poly):
     assert "(" not in poly
     if "**" not in poly:
         return poly
-    elif "**" in poly and poly.count("*") == 2 and "+" in poly:
+    elif "+" in poly:
         terms = poly.split("+")
         for i, v in enumerate(terms):
             if "**" in v:
-                terms[i] = erase_indices(terms[i])
-                continue
+                terms[i] = erase_indices(v)
         return "+".join(terms)
     elif "**" in poly and poly.count("*") == 2:
-        print poly
         j = poly.index("**")
         poly = "(" + poly[:j] + ")*" + poly[j + 1:]
-        print poly
         return erase_brackets(poly)
     elif "**" in poly:
         poly = poly.replace("**", "^")
